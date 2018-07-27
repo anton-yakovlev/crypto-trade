@@ -2,17 +2,25 @@
   box-sizing: border-box;
 }
 
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background-color: #ccc;
+  background-color: #555;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
 }
 
 .app {
-  background-color: #fff;
-  width: 600px;
-  margin: 20px auto;
-  border-radius: 10px;
-  padding: 20px;
+  height: 100%;
+  padding: 20px 10px;
 }

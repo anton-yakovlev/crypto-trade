@@ -3,12 +3,14 @@ import { connect } from 'react-redux';
 import { Route, Redirect, Switch, withRouter } from 'react-router-dom';
 import Login from 'components/Login';
 import PrivateRoute from 'components/PrivateRoute';
-//import UserPage from 'components/UserPage/UserPage';
+import Profile from 'components/Profile';
 import { logout } from 'ducks/auth';
 import { getIsAuthorized } from 'ducks/auth/index';
-import { getIsNetworkErrorPresent, getNetworkError } from 'ducks/network';
+//import { getIsNetworkErrorPresent, getNetworkError } from 'ducks/network';
 import styled from 'styled-components';
+import Particles from 'react-particles-js';
 import 'index.css';
+import ParticleParams from './particles-params';
 
 const StyledNetworkError = styled.div`
   background-color: red;
@@ -25,6 +27,19 @@ const StyledLogoutButton = styled.button`
   font-size: 16px;
   border: none;
   cursor: pointer;
+`;
+
+const StyledParticles = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+
+  & div {
+    height: 100%;
+  }
 `;
 
 class AppRouter extends React.PureComponent {
@@ -48,13 +63,15 @@ class AppRouter extends React.PureComponent {
         )}
 
         <Switch>
-          {/* <Route exact path="/" render={() => <Redirect to="/users/me" />} /> */}
-          <Route exact path="/" render={() => <Redirect to="/login" />} />
+          <Route exact path="/" render={() => <Redirect to="/profile" />} />
           <Route path="/login" component={Login} />
-          {/* <PrivateRoute exact path="/users/me" component={UserPage} />
-          <PrivateRoute path="/users/:name" component={UserPage} />
-          <Redirect to="/users/me" /> */}
+          <PrivateRoute exact path="/profile" component={Profile} />
+          <Redirect to="/profile" />
         </Switch>
+
+        <StyledParticles>
+          <Particles params={ParticleParams} />
+        </StyledParticles>
       </div>
     );
   }

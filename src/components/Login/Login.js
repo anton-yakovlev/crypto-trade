@@ -1,40 +1,58 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { authorize, getIsAuthorized } from 'ducks/auth';
-import styled from 'styled-components';
+import { loginRequest, registrationRequest, getIsAuthorized, getLoginError, getRegistrationError } from 'ducks/auth';
+import LoginLogo from './Logo.svg';
+import {
+  LoginWrapper,
+  LoginButton,
+  LoginCard,
+  LoginInput,
+  LoginLogoWrapper,
+  LoginText,
+  StyledLoginLogo,
+  LoginHeader,
+  StyledLoginError
+} from './LoginStyles';
 
-const LoginWrapper = styled.div`
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const LoginText = styled.p`
-  padding: 0;
-  margin: 0 0 20px;
-  text-align: center;
-`;
-
-const LoginInput = styled.input`
-  font-size: 16px;
-  padding: 10px 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  width: 100%;
-  background-color: transparent;
-  box-shadow: none;
-  border: 1px solid #ccc;
-`;
+const AUTH_MODE = {
+  LOGIN: {
+    name: 'login',
+    title: 'Login',
+    buttonCaption: 'Sign In',
+    alternativeLinkCaption: 'Registration',
+    alternativeText: 'First Time Here? '
+  },
+  REGISTRATION: {
+    name: 'registration',
+    title: 'Registration',
+    buttonCaption: 'Sign Up',
+    alternativeLinkCaption: 'Login',
+    alternativeText: 'Have account? '
+  }
+};
 
 class Login extends React.PureComponent {
-  state = { token: '' };
+  state = {
+    email: '',
+    password: '',
+    mode: AUTH_MODE.LOGIN,
+    emptyFields: null
+  };
+
+  changeMode = event => {
+    event.preventDefault();
+    this.setState({
+      mode: this.state.mode.name === AUTH_MODE.LOGIN.name ? AUTH_MODE.REGISTRATION : AUTH_MODE.LOGIN
+    });
+  };
 
   handleInputChange = e => {
-    this.setState({ token: e.target.value });
+    const { name, value } = e.target;
+
+    this.setState({
+      [name]: value
+    });
   };
 
   handleFormSubmit = e => {
@@ -42,28 +60,31 @@ class Login extends React.PureComponent {
     this.sendLoginRequest();
   };
 
-  handleKeyPress = e => {
-    if (e.keyCode !== 13) {
-      return;
-    }
-
-    this.sendLoginRequest();
-  };
-
   sendLoginRequest() {
-    const { token } = this.state;
-    const { authorize } = this.props;
+    const { email, password } = this.state;
+    const { loginRequest, registrationRequest } = this.props;
 
-    if (token.trim() === '') {
+    if (email.trim() === '' || password.trim() === '') {
+      this.setState({
+        emptyFields: true
+      });
       return;
     }
 
-    authorize(token);
+    this.setState({
+      emptyFields: false
+    });
+
+    if (this.state.mode.name === 'login') {
+      loginRequest({ email: email, password: password });
+    } else {
+      registrationRequest({ email: email, password: password });
+    }
   }
 
   render() {
-    const { token } = this.state;
-    const { isAuthorized } = this.props;
+    const { mode, emptyFields } = this.state;
+    const { isAuthorized, loginError, registrationError } = this.props;
 
     if (isAuthorized) {
       return <Redirect to="/" />;
@@ -71,24 +92,38 @@ class Login extends React.PureComponent {
 
     return (
       <LoginWrapper>
-        <form onKeyPress={this.handleKeyPress} onSubmit={this.handleFormSubmit}>
-          <LoginText>
-            Получить токен нужно на своей странице github, перейдите по&nbsp;
-            <a href="https://github.com/settings/tokens">адресу</a> и создайте
-            себе токен. Запишите куда нибудь токен, так как после создания
-            доступ к нему будет только один раз.
-          </LoginText>
+        <form onSubmit={this.handleFormSubmit}>
+          <LoginLogoWrapper>
+            <StyledLoginLogo src={LoginLogo} alt="Crypto Trade" />
+          </LoginLogoWrapper>
 
-          <LoginInput
-            type="text"
-            placeholder="Введите токен"
-            value={token}
-            onChange={this.handleInputChange}
-          />
+          <LoginCard>
+            <LoginHeader>{mode.title}</LoginHeader>
+            <LoginInput type="email" placeholder="Email" name="email" onChange={this.handleInputChange} />
+            <LoginInput type="password" placeholder="Password" name="password" onChange={this.handleInputChange} />
+            <LoginButton type="submit">{mode.buttonCaption}</LoginButton>
 
-          <LoginText>
-            После ввода нажать Enter.
-          </LoginText>
+            {loginError && <StyledLoginError>{loginError}</StyledLoginError>}
+
+            {emptyFields && <StyledLoginError>Please Fill Up the Form</StyledLoginError>}
+
+            {registrationError &&
+              registrationError.email &&
+              registrationError.email.map(item => <StyledLoginError>Email {item}</StyledLoginError>)}
+
+            {registrationError &&
+              registrationError.password &&
+              registrationError.password.map(item => <StyledLoginError>Password {item}</StyledLoginError>)}
+          </LoginCard>
+
+          <LoginCard>
+            <LoginText>
+              {mode.alternativeText}
+              <a href="" onClick={this.changeMode}>
+                {mode.alternativeLinkCaption}
+              </a>
+            </LoginText>
+          </LoginCard>
         </form>
       </LoginWrapper>
     );
@@ -96,11 +131,14 @@ class Login extends React.PureComponent {
 }
 
 const mapStateToProps = state => ({
-  isAuthorized: getIsAuthorized(state)
+  isAuthorized: getIsAuthorized(state),
+  loginError: getLoginError(state),
+  registrationError: getRegistrationError(state)
 });
 
 const mapDispatchToProps = {
-  authorize
+  loginRequest,
+  registrationRequest
 };
 
 export default connect(
