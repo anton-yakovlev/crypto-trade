@@ -12,20 +12,17 @@ export function* authFlow() {
 
     if (!isAuthorized && localStorageToken) {
       response = localStorageToken;
-      console.log('authFlow loginSuccess');
       yield call(setTokenApi, response);
       yield put(loginSuccess());
     } else {
       try {
         const action = yield take(loginRequest);
-        console.log('authFlow loginRequest');
         response = yield call(login, action.payload);
         const token = response.data.jwt;
         yield call(setTokenApi, token);
         yield call(setTokenToLocalStorage, token);
         yield put(loginSuccess());
       } catch (error) {
-        console.log('authFlow loginError', error.data.message);
         yield put(loginError(error.data.message));
       }
     }

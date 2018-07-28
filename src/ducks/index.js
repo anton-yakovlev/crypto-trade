@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux'
 import auth from './auth'
-//import followers from './followers'
-//import network from './network'
-//import users from './users'
+import currency from './currency'
+import transactions from './transactions'
+import user from './user'
+import wallet from './wallet'
+import feed from './feed'
 
-//export default combineReducers({ auth, followers, network, users })
-export default combineReducers({ auth })
+export default combineReducers({ auth, currency, transactions, user, wallet, feed})

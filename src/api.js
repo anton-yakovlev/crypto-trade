@@ -38,13 +38,13 @@ export const registration = ({ email, password }) =>
  * Currency API calls
  */
 
-export const buyCurrency = (currency, value) =>
+export const buyCurrency = ({currency, value}) =>
   instance.get(`stock/exchange?symbol=${currency}&operation=purchase&sum=${value}`).then(response => {
     if (response.data.result === 'error') return Promise.reject(response.data.message);
     return response;
   });
 
-export const sellCurrency = (currency, value) =>
+export const sellCurrency = ({currency, value}) =>
   instance.get(`stock/exchange?symbol=${currency}&operation=sell&sum=${value}`).then(response => {
     if (response.data.result === 'error') return Promise.reject(response.data.message);
     return response;

@@ -1,11 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Route, Redirect, Switch, withRouter } from 'react-router-dom';
 import Login from 'components/Login';
 import PrivateRoute from 'components/PrivateRoute';
 import Profile from 'components/Profile';
-import { logout } from 'ducks/auth';
-import { getIsAuthorized } from 'ducks/auth/index';
 //import { getIsNetworkErrorPresent, getNetworkError } from 'ducks/network';
 import styled from 'styled-components';
 import Particles from 'react-particles-js';
@@ -17,16 +14,6 @@ const StyledNetworkError = styled.div`
   padding: 20px;
   border-radius: 10px;
   margin: 20px auto;
-`;
-
-const StyledLogoutButton = styled.button`
-  margin: 0 auto 20px;
-  display: block;
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
 `;
 
 const StyledParticles = styled.div`
@@ -43,23 +30,13 @@ const StyledParticles = styled.div`
 `;
 
 class AppRouter extends React.PureComponent {
-  handleLogoutClick = () => {
-    this.props.logout();
-  };
-
   render() {
-    const { isAuthorized, isNetworkError, networkErrorText } = this.props;
+    const { isNetworkError, networkErrorText } = this.props;
 
     return (
       <div className="app">
         {isNetworkError && (
           <StyledNetworkError>{networkErrorText}</StyledNetworkError>
-        )}
-
-        {isAuthorized && (
-          <StyledLogoutButton onClick={this.handleLogoutClick}>
-            Logout
-          </StyledLogoutButton>
         )}
 
         <Switch>
@@ -77,19 +54,4 @@ class AppRouter extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  isAuthorized: getIsAuthorized(state),
-  //isNetworkError: getIsNetworkErrorPresent(state),
-  //networkErrorText: getNetworkError(state)
-});
-
-const mapDispatchToProps = {
-  logout
-};
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AppRouter)
-);
+export default withRouter(AppRouter);

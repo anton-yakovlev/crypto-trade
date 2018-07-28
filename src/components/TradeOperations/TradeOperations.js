@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react';
 import { compose, mapProps } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getCurrentCurrencyPurchase, getCurrentCurrencySell, getSelectedCurrency } from '../../reducers/currency';
-import { buyCurrencyRequest, sellCurrencyRequest } from '../../actions/currency';
+import { getCurrentCurrencyPurchase, getCurrentCurrencySell, getSelected } from 'ducks/currency';
+import { buyCurrencyRequest, sellCurrencyRequest } from 'ducks/currency';
 import styled from 'styled-components';
-import { getError } from '../../reducers/wallet';
+import { getTradeCurrencyError } from 'ducks/currency';
 
 const enhance = compose(
   withRouter,
@@ -13,8 +13,8 @@ const enhance = compose(
     state => ({
       currentCurrencyPurchase: getCurrentCurrencyPurchase(state),
       currentCurrencySell: getCurrentCurrencySell(state),
-      selectedCurrency: getSelectedCurrency(state),
-      error: getError(state)
+      selectedCurrency: getSelected(state),
+      error: getTradeCurrencyError(state)
     }),
     {
       buyCurrencyRequest,
@@ -61,6 +61,7 @@ const Input = styled.input`
   padding: 5px 0 3px;
   padding-right: 50px;
   box-sizing: border-box;
+  font-size: 18px;
 `;
 
 const Currency = styled.span`
@@ -79,6 +80,7 @@ const Button = styled.button`
   color: #fff;
   padding: 5px 0 3px;
   border-radius: 3px;
+  font-size: 18px;
 `;
 
 const ButtonSell = Button.extend`
@@ -128,13 +130,13 @@ class TradeOperations extends PureComponent {
   handleSell = event => {
     const { selectedCurrency } = this.props;
     const { inputFiat } = this.state;
-    this.props.sellCurrencyRequest({ selectedCurrency, value: inputFiat });
+    this.props.sellCurrencyRequest({ currency: selectedCurrency, value: inputFiat });
   };
 
   handleBuy = event => {
     const { selectedCurrency } = this.props;
     const { inputFiat } = this.state;
-    this.props.buyCurrencyRequest({ selectedCurrency, value: inputFiat });
+    this.props.buyCurrencyRequest({ currency: selectedCurrency, value: inputFiat });
   };
 
   changeInputs(name, sell, purchase) {
@@ -179,7 +181,6 @@ class TradeOperations extends PureComponent {
     const { inputFiat, inputSell, inputPurchase } = this.state;
     return (
       <Container>
-        <h2>Покупка/продажа</h2>
         <InputWrapper>
           <Input
             onChange={this.handleChange}
@@ -201,7 +202,7 @@ class TradeOperations extends PureComponent {
             />
             <Currency>$</Currency>
           </InputWrapper>
-          <ButtonSell onClick={this.handleSell}>Продать</ButtonSell>
+          <ButtonSell onClick={this.handleSell}>Sell</ButtonSell>
         </div>
         <div>
           <InputWrapper>
@@ -214,7 +215,7 @@ class TradeOperations extends PureComponent {
             />
             <Currency>$</Currency>
           </InputWrapper>
-          <ButtonPurchase onClick={this.handleBuy}>Купить</ButtonPurchase>
+          <ButtonPurchase onClick={this.handleBuy}>Buy</ButtonPurchase>
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
       </Container>

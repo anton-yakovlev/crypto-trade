@@ -1,21 +1,26 @@
 import { takeLatest, fork, take, select, put, cancel, call } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
-import { loginSuccess, logout } from '../actions/auth';
-import { getOffset } from '../reducers/currency';
+import { loginSuccess, logout } from 'ducks/auth';
 import {
-  selectBtc,
-  selectEth,
   fetchBtcRequest,
   fetchEthRequest,
   fetchBtcSuccess,
+  fetchEthSuccess,
   fetchBtcFailure,
   fetchEthFailure,
-  fetchEthSuccess,
-  selectOffset
-} from '../actions/currency';
-import { candles, getWallet } from '../api';
-import { fetchWalletRequest, fetchWalletSuccess, fetchWalletFailure } from '../actions/wallet';
-import { changeLocation } from '../actions/location';
+  selectOffset,
+  selectCurrency,
+  getOffset,
+  buyCurrencyRequest,
+  buyCurrencySuccess,
+  buyCurrencyError,
+  sellCurrencyRequest,
+  sellCurrencySuccess,
+  sellCurrencyError
+} from 'ducks/currency';
+import { candles, getWallet, buyCurrency, sellCurrency } from '../api';
+import { fetchWalletRequest, fetchWalletSuccess, fetchWalletFailure } from 'ducks/wallet';
+import { fetchTransactionsRequest } from 'ducks/transactions';
 
 function* fetchBtcFlow(action) {
   try {
@@ -35,7 +40,12 @@ function* fetchEthFlow(action) {
   }
 }
 
-function* loginCurrencyFlow() {
+export function* fetchCurrenciesWatch() {
+  yield takeLatest(fetchBtcRequest, fetchBtcFlow);
+  yield takeLatest(fetchEthRequest, fetchEthFlow);
+}
+
+function* сurrencyFlow() {
   while (true) {
     const offset = yield select(getOffset);
     yield put(fetchBtcRequest(offset));
@@ -48,13 +58,13 @@ function* loginCurrencyFlow() {
 export function* currencyWatch() {
   let currencyTask;
   while (true) {
-    const action = yield take([loginSuccess, logout, selectBtc, selectEth, selectOffset, changeLocation]);
+    const action = yield take([loginSuccess, logout, selectCurrency, selectOffset]);
 
     if (currencyTask) {
       yield cancel(currencyTask);
       currencyTask = undefined;
     }
-    if (action.type !== logout.toString()) currencyTask = yield fork(loginCurrencyFlow);
+    if (action.type !== logout.toString()) currencyTask = yield fork(сurrencyFlow);
   }
 }
 
@@ -77,4 +87,48 @@ export function* fetchBtcWatch() {
 
 export function* fetchEthWatch() {
   yield takeLatest(fetchEthRequest, fetchEthFlow);
+}
+
+export function* buyCurrencyFlow() {
+  let currencyTask;
+  while (true) {
+    try {
+      if (currencyTask) {
+        yield cancel(currencyTask);
+        currencyTask = undefined;
+      }
+
+      const action = yield take(buyCurrencyRequest);
+      yield call(buyCurrency, action.payload);
+
+      yield put(buyCurrencySuccess());
+      yield put(fetchWalletRequest());
+      yield put(fetchTransactionsRequest());
+    } catch (error) {
+      console.log(error);
+      yield put(buyCurrencyError(error));
+    }
+  }
+}
+
+export function* sellCurrencyFlow() {
+  let currencyTask;
+  while (true) {
+    try {
+      if (currencyTask) {
+        yield cancel(currencyTask);
+        currencyTask = undefined;
+      }
+
+      const action = yield take(sellCurrencyRequest);
+      yield call(sellCurrency, action.payload);
+
+      yield put(sellCurrencySuccess());
+      yield put(fetchWalletRequest());
+      yield put(fetchTransactionsRequest());
+    } catch (error) {
+      console.log(error);
+      yield put(sellCurrencyError(error));
+    }
+  }
 }
