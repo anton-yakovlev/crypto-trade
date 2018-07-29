@@ -2,10 +2,18 @@ import React, { PureComponent } from 'react';
 import { compose, mapProps } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getCurrentCurrencyPurchase, getCurrentCurrencySell, getSelected } from 'ducks/currency';
-import { buyCurrencyRequest, sellCurrencyRequest } from 'ducks/currency';
+import {
+  getCurrentCurrencyPurchase,
+  getCurrentCurrencySell,
+  getSelected,
+  getIsBtcLoading,
+  getIsEthLoading,
+  buyCurrencyRequest,
+  sellCurrencyRequest,
+  getTradeCurrencyError
+} from 'ducks/currency';
 import styled from 'styled-components';
-import { getTradeCurrencyError } from 'ducks/currency';
+import MySpinner from 'components/MySpinner';
 
 const enhance = compose(
   withRouter,
@@ -14,7 +22,9 @@ const enhance = compose(
       currentCurrencyPurchase: getCurrentCurrencyPurchase(state),
       currentCurrencySell: getCurrentCurrencySell(state),
       selectedCurrency: getSelected(state),
-      error: getTradeCurrencyError(state)
+      error: getTradeCurrencyError(state),
+      isBtcLoading: getIsBtcLoading(state),
+      isEthLoading: getIsEthLoading(state)
     }),
     {
       buyCurrencyRequest,
@@ -177,8 +187,13 @@ class TradeOperations extends PureComponent {
   }
 
   render() {
-    const { error, selectedCurrency } = this.props;
+    const { error, selectedCurrency, isBtcLoading, isEthLoading } = this.props;
     const { inputFiat, inputSell, inputPurchase } = this.state;
+
+    if (isBtcLoading || isEthLoading) {
+      return <MySpinner size="32" />;
+    }
+
     return (
       <Container>
         <InputWrapper>

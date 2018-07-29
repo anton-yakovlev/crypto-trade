@@ -2,7 +2,7 @@ import { createActions } from 'redux-actions';
 
 export const {
   feed: {
-    fetcFeedRequest,
+    fetchFeedRequest,
     fetchFeedSuccess,
     fetchFeedFailure
   }

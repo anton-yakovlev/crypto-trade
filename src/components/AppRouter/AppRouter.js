@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Redirect, Switch, withRouter } from 'react-router-dom';
 import Login from 'components/Login';
 import PrivateRoute from 'components/PrivateRoute';
-import Profile from 'components/Profile';
+import Trading from 'components/Trading';
 //import { getIsNetworkErrorPresent, getNetworkError } from 'ducks/network';
 import styled from 'styled-components';
 import Particles from 'react-particles-js';
@@ -40,10 +40,10 @@ class AppRouter extends React.PureComponent {
         )}
 
         <Switch>
-          <Route exact path="/" render={() => <Redirect to="/profile" />} />
+          <Route exact path="/" render={() => <Redirect to="/trading" />} />
           <Route path="/login" component={Login} />
-          <PrivateRoute exact path="/profile" component={Profile} />
-          <Redirect to="/profile" />
+          <PrivateRoute exact path="/trading" component={Trading} />
+          <Redirect to="/trading" />
         </Switch>
 
         <StyledParticles>

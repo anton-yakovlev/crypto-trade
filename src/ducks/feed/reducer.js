@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
-import { fetcFeedRequest, fetchFeedSuccess, fetchFeedFailure } from './actions';
+import { fetchFeedRequest, fetchFeedSuccess, fetchFeedFailure } from './actions';
 
 const isLoading = handleActions(
   {
-    [fetcFeedRequest]: () => true,
+    [fetchFeedRequest]: () => true,
     [fetchFeedSuccess]: () => false,
     [fetchFeedFailure]: () => false
   },
@@ -13,7 +13,7 @@ const isLoading = handleActions(
 
 const error = handleActions(
   {
-    [fetcFeedRequest]: () => false,
+    [fetchFeedRequest]: () => false,
     [fetchFeedSuccess]: () => false,
     [fetchFeedFailure]: (_state, action) => action.payload
   },
@@ -24,7 +24,7 @@ const records = handleActions(
   {
     [fetchFeedSuccess]: (_state, action) => action.payload
   },
-  {}
+  []
 );
 
 export default combineReducers({ isLoading, error, records });

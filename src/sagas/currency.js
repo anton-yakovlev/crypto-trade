@@ -21,6 +21,7 @@ import {
 import { candles, getWallet, buyCurrency, sellCurrency } from '../api';
 import { fetchWalletRequest, fetchWalletSuccess, fetchWalletFailure } from 'ducks/wallet';
 import { fetchTransactionsRequest } from 'ducks/transactions';
+import { fetchFeedRequest } from 'ducks/feed';
 
 function* fetchBtcFlow(action) {
   try {
@@ -104,6 +105,7 @@ export function* buyCurrencyFlow() {
       yield put(buyCurrencySuccess());
       yield put(fetchWalletRequest());
       yield put(fetchTransactionsRequest());
+      yield put(fetchFeedRequest());
     } catch (error) {
       console.log(error);
       yield put(buyCurrencyError(error));
@@ -126,6 +128,7 @@ export function* sellCurrencyFlow() {
       yield put(sellCurrencySuccess());
       yield put(fetchWalletRequest());
       yield put(fetchTransactionsRequest());
+      yield put(fetchFeedRequest());
     } catch (error) {
       console.log(error);
       yield put(sellCurrencyError(error));

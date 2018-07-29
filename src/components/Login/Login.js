@@ -1,7 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { loginRequest, registrationRequest, getIsAuthorized, getLoginError, getRegistrationError } from 'ducks/auth';
+import {
+  loginRequest,
+  registrationRequest,
+  getIsAuthorized,
+  getLoginError,
+  getRegistrationError,
+  getIsFetching
+} from 'ducks/auth';
 import LoginLogo from './Logo.svg';
 import {
   LoginWrapper,
@@ -14,6 +21,7 @@ import {
   LoginHeader,
   StyledLoginError
 } from './LoginStyles';
+import MySpinner from 'components/MySpinner';
 
 const AUTH_MODE = {
   LOGIN: {
@@ -84,7 +92,7 @@ class Login extends React.PureComponent {
 
   render() {
     const { mode, emptyFields } = this.state;
-    const { isAuthorized, loginError, registrationError } = this.props;
+    const { isAuthorized, loginError, registrationError, isFetching } = this.props;
 
     if (isAuthorized) {
       return <Redirect to="/" />;
@@ -109,11 +117,13 @@ class Login extends React.PureComponent {
 
             {registrationError &&
               registrationError.email &&
-              registrationError.email.map(item => <StyledLoginError>Email {item}</StyledLoginError>)}
+              registrationError.email.map(item => <StyledLoginError key={item}>Email {item}</StyledLoginError>)}
 
             {registrationError &&
               registrationError.password &&
-              registrationError.password.map(item => <StyledLoginError>Password {item}</StyledLoginError>)}
+              registrationError.password.map(item => <StyledLoginError key={item}>Password {item}</StyledLoginError>)}
+
+            {isFetching && <MySpinner size="32" />}
           </LoginCard>
 
           <LoginCard>
@@ -133,7 +143,8 @@ class Login extends React.PureComponent {
 const mapStateToProps = state => ({
   isAuthorized: getIsAuthorized(state),
   loginError: getLoginError(state),
-  registrationError: getRegistrationError(state)
+  registrationError: getRegistrationError(state),
+  isFetching: getIsFetching(state)
 });
 
 const mapDispatchToProps = {
