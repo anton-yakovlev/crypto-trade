@@ -91,14 +91,8 @@ export function* fetchEthWatch() {
 }
 
 export function* buyCurrencyFlow() {
-  let currencyTask;
   while (true) {
     try {
-      if (currencyTask) {
-        yield cancel(currencyTask);
-        currencyTask = undefined;
-      }
-
       const action = yield take(buyCurrencyRequest);
       yield call(buyCurrency, action.payload);
 
@@ -107,21 +101,14 @@ export function* buyCurrencyFlow() {
       yield put(fetchTransactionsRequest());
       yield put(fetchFeedRequest());
     } catch (error) {
-      console.log(error);
       yield put(buyCurrencyError(error));
     }
   }
 }
 
 export function* sellCurrencyFlow() {
-  let currencyTask;
   while (true) {
     try {
-      if (currencyTask) {
-        yield cancel(currencyTask);
-        currencyTask = undefined;
-      }
-
       const action = yield take(sellCurrencyRequest);
       yield call(sellCurrency, action.payload);
 
@@ -130,7 +117,6 @@ export function* sellCurrencyFlow() {
       yield put(fetchTransactionsRequest());
       yield put(fetchFeedRequest());
     } catch (error) {
-      console.log(error);
       yield put(sellCurrencyError(error));
     }
   }

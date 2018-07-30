@@ -29,9 +29,7 @@ const FeedItemHeader = styled.div`
   margin-bottom: 10px;
 `;
 
-const FeedItemBody = styled.div`
-  display: flex;
-  justify-content: space-between;
+const FeedItemBody = styled.div`  
 `;
 
 class Feed extends React.PureComponent {
@@ -60,9 +58,9 @@ class Feed extends React.PureComponent {
 
               <FeedItemBody>
                 {item.usd_delta > 0 ? 'Buy' : 'Sell'}&nbsp;
-                {item.btc_delta && `${this.round(item.btc_delta, 5)} Btc `}
-                {item.eth_delta && `${this.round(item.eth_delta, 5)} Eth`}
-                For&nbsp; ${this.round(Math.abs(item.usd_delta), 5)} USD
+                <strong>{item.btc_delta && `${this.round(Math.abs(item.btc_delta), 5)} Btc `}</strong>
+                <strong>{item.eth_delta && `${this.round(Math.abs(item.eth_delta), 5)} Eth `}</strong>
+                For&nbsp; <strong>${this.round(Math.abs(item.usd_delta), 5)} USD</strong>
               </FeedItemBody>
             </FeedItem>
           );

@@ -23,7 +23,7 @@ import {
 } from './LoginStyles';
 import MySpinner from 'components/MySpinner';
 
-const AUTH_MODE = {
+export const AUTH_MODE = {
   LOGIN: {
     name: 'login',
     title: 'Login',

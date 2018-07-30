@@ -67,10 +67,10 @@ const tradeCurrencyError = handleActions(
   {
     [buyCurrencyRequest]: () => false,
     [buyCurrencySuccess]: () => false,
-    [buyCurrencyError]: (_state, action) => action.payload,
     [sellCurrencyRequest]: () => false,
     [sellCurrencySuccess]: () => false,
-    [sellCurrencyError]: () => (_state, action) => action.payload
+    [sellCurrencyError]: (_state, action) => action.payload,
+    [buyCurrencyError]: (_state, action) => action.payload
   },
   false
 );
