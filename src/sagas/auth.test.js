@@ -6,10 +6,8 @@ import {
   removeTokenFromLocalStorage,
 } from 'localStorage'
 import { loginRequest, loginSuccess, registrationRequest, logout } from 'ducks/auth'
-//import { fetchUserRequest } from 'ducks/user'
-//import { fetchAccountRequest } from 'ducks/account'
 
-describe('auth saga', () => {
+describe('Auth Saga', () => {
   describe('Saga authFlow', () => {
     describe('Login from token localStorage', () => {
       const gen = authFlow()

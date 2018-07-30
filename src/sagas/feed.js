@@ -2,7 +2,7 @@ import { put, call, takeLatest } from 'redux-saga/effects';
 import { getUserTransactions } from 'api';
 import { fetchFeedRequest, fetchFeedSuccess, fetchFeedFailure } from 'ducks/feed';
 
-function* fetchFeedFlow() {
+export function* fetchFeedFlow() {
   try {
     const response = yield call(getUserTransactions);
     yield put(fetchFeedSuccess(response.data.result));

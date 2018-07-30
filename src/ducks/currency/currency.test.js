@@ -4,12 +4,8 @@ import {
     fetchBtcSuccess,
     fetchEthRequest,
     fetchEthSuccess,
-    buyCurrencyRequest,
-    buyCurrencySuccess,
     buyCurrencyError,
-    sellCurrencyRequest,
-    sellCurrencySuccess,
-    sellCurrencyError,
+    sellCurrencyError
 } from './actions'
 
 const initialState = {

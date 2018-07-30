@@ -24,7 +24,7 @@ const info = handleActions(
   {
     [fetchUserSuccess]: (_state, action) => action.payload
   },
-  {}
+  []
 );
 
 export default combineReducers({ isLoading, error, info });

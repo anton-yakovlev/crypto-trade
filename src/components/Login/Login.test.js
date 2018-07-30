@@ -1,7 +1,7 @@
 import React from 'react';
 import Login from './Login';
 import { AUTH_MODE } from './Login';
-import { shallow, render } from 'enzyme';
+import { shallow } from 'enzyme';
 import configureStore from 'redux-mock-store'
 
 const initialState = {

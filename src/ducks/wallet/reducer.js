@@ -24,7 +24,7 @@ const coins = handleActions(
   {
     [fetchWalletSuccess]: (_state, action) => action.payload
   },
-  {}
+  []
 );
 
 export default combineReducers({ isLoading, error, coins });
